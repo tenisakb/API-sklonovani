@@ -1,4 +1,9 @@
 <?php
+#mělo by se dodržovat psr-12
+#tohle je mini projektík ale i tak by se mělo využívat více dependency injection
+#try catch bys určitě v kontroleru použil
+
+#při business použití by měli existovat unit testy
 
 //Require composer autoload
 require('vendor/autoload.php');
@@ -11,11 +16,11 @@ class API {
         $this->conn = $db;
     }
 
-    public function my_vocative($full_name)
+    public function my_vocative($full_name) #vstupní proměnná by měla obsahovat typ (string, int, bool...)
     {
         $subjects = $this->detect_subjects($full_name);
 
-        $array = array();
+        $array = array(); #nešlo by to jednodušeji?
         
         foreach($subjects as $key => $subject) {
             $company = $this->detect_company($subject);
@@ -41,7 +46,7 @@ class API {
 
                 $name = new CzechName();
                 if($name->isMale($individual['first_name']) && $name->isMale($individual['last_name'])) {
-                    $sex = 'man';
+                    $sex = 'man'; #tohle bych dal ideálně do konstanty na začátek třídy
                 } else {
                     $sex = 'woman';
                 }
@@ -60,11 +65,11 @@ class API {
             }
         }
 
-        echo json_encode($array);
+        echo json_encode($array); #echo v modelu?
         die();
     }
 
-    public function detect_subjects($full_name) {
+    public function detect_subjects($full_name) { 
         $query = "SELECT connecting_shrt FROM connecting_phrases";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -80,7 +85,7 @@ class API {
             echo json_encode(
                 array(
                     'code'    => 5,
-                    'message' => 'Error getting connecting phrases.'
+                    'message' => 'Error getting connecting phrases.' #tohle by se nejčastěji tahalo z nějakého lang souboru s překlady, databáze apod. 
                 )
             );
         
@@ -137,7 +142,7 @@ class API {
             }
 
         } else {
-            echo json_encode(
+            echo json_encode( #throw exception
                 array(
                     'code'    => 7,
                     'message' => 'Error getting company.'
